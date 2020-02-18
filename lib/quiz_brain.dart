@@ -29,12 +29,14 @@ class QuizBrain {
   void nextQuestion() {
     if (_questionNumber < _questionBank.length - 1) {
       _questionNumber++;
-    } else {
-      _isFinished = true;
     }
   }
 
   bool isFinished() {
-    return _isFinished;
+    return _questionNumber >= _questionBank.length - 1;
+  }
+
+  void reset() {
+    _questionNumber = 0;
   }
 }

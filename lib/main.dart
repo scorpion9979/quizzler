@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 import 'quiz_brain.dart';
 
 void main() => runApp(Quizzler());
@@ -31,6 +32,30 @@ class _QuizPageState extends State<QuizPage> {
 
   void checkAnswer({bool pickedAnswer}) {
     bool correctAnswer = quizBrain.getQuestionAnswer();
+    if (quizBrain.isFinished()) {
+      Alert(
+        context: context,
+        type: AlertType.success,
+        title: "Quiz Finished",
+        desc: "Congrats on finishing the quiz.",
+        buttons: [
+          DialogButton(
+            child: Text(
+              "Restart",
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+            onPressed: () {
+              setState(() {
+                scoreKeeper.clear();
+                quizBrain.reset();
+              });
+              Navigator.pop(context);
+            },
+            width: 120,
+          )
+        ],
+      ).show();
+    }
     setState(() {
       if (correctAnswer == pickedAnswer) {
         scoreKeeper.add(
@@ -47,6 +72,7 @@ class _QuizPageState extends State<QuizPage> {
           ),
         );
       }
+      quizBrain.nextQuestion();
     });
   }
 
@@ -88,7 +114,6 @@ class _QuizPageState extends State<QuizPage> {
               onPressed: () {
                 //The user picked true.
                 checkAnswer(pickedAnswer: true);
-                quizBrain.nextQuestion();
               },
             ),
           ),
@@ -108,7 +133,6 @@ class _QuizPageState extends State<QuizPage> {
               onPressed: () {
                 //The user picked false.
                 checkAnswer(pickedAnswer: false);
-                quizBrain.nextQuestion();
               },
             ),
           ),
